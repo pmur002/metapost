@@ -1,6 +1,9 @@
 
 ## Specify a MetaPost path via R functions and data structures
 
+## There is a superclass for knots, paths, and connectors
+## (so can write a single Ops method)
+
 ## Individual knots
 knot <- function(x, y,
                  dir=NA, dir.left=dir, dir.right=dir,
@@ -27,35 +30,60 @@ knot <- function(x, y,
               cp.left.y=cp.left.y, cp.right.y=cp.right.y,
               curl.left=curl.left, curl.right=curl.right,
               tension.left=tension.left, tension.right=tension.right)
-    class(k) <- "knot"
+    class(k) <- c("knot", "mpobj")
     k
+}
+
+length.knot <- function(x) {
+    max(sapply(x, length))
 }
 
 print.knot <- function(x, ...) {
     cat(as.character(x, ...), sep="\n")
 }
 
+## Special cycle knot
+cycle <- function() {
+    x <- knot(NA, NA)
+    class(x) <- c("cycle", "knot", "mpobj")
+    x
+}
+
 ## Knot connectors
 ## Explicit control points
 cp <- function(x, y) {
     z <- c(x, y)
-    class(z) <- c("controlPoint", "connector")
+    class(z) <- c("controlPoint", "connector", "mpobj")
     z
 }
 
 ## Directions
 ## Possibilities are:
-##   numeric => angle
-##   "dir"   => x/y vector => angle
-dir <- function(x, y) {
-    d <- 180*atan2(y, x)/pi
-    class(d) <- c("direction", "connector")
+##   one value => angle
+##   two values => x/y vector => angle
+dir <- function(x, y=NULL) {
+    if (is.null(y)) {
+        d <- as.numeric(x)
+    } else {
+        d <- 180*atan2(y, x)/pi
+    }
+    class(d) <- c("direction", "connector", "mpobj")
     d
 }
 
+## TODO
+## limit to valid tension values
 tension <- function(x) {
     x <- as.numeric(x)
-    class(x) <- c("tension", "connector")
+    class(x) <- c("tension", "connector", "mpobj")
+    x
+}
+
+## TODO
+## limit to valid curl values
+curl <- function(x) {
+    x <- as.numeric(x)
+    class(x) <- c("curl", "connector", "mpobj")
     x
 }
 
@@ -79,12 +107,17 @@ path.knot <- function(x, ..., cycle=FALSE) {
     knots <- list(x, ...)
     if (!all(sapply(knots, inherits, "knot")))
         stop("Path must contain only knots")
-    class(knots) <- "path"
-    knots
+    p <- list(knots=knots)
+    class(p) <- c("path", "mpobj")
+    p
 }
 
 ## ... made from a matrix (one row per knot)
 path.matrix <- function(x, ..., cycle=FALSE) {
+}
+
+length.path <- function(x) {
+    length(x$knots)
 }
 
 print.path <- function(x, ...) {
@@ -94,7 +127,8 @@ print.path <- function(x, ...) {
 ## Combining knots, paths, and connectors
 
 ## TODO:
-## Disallow invalid combinations like knot(0,0) + cp(1,0) + tension(4) 
+## Disallow invalid combinations like knot(0,0) + cp(1,0) + tension(4)
+## Disallow adding to cycle
 combine <- function(x, y) {
     UseMethod("combine")
 }
@@ -107,7 +141,7 @@ addToIncompleteKnot.controlPoint <- function(x, knot) {
     if (!is.null(knot$cp2))
         stop("Two control points have already been specified")
     knot$cp2 <- x
-    class(knot) <- c("incompleteKnot", "knot")
+    class(knot) <- c("incompleteKnot", "knot", "mpobj")
     knot
 }
 
@@ -115,7 +149,15 @@ addToIncompleteKnot.tension <- function(x, knot) {
     if (!is.null(knot$t2))
         stop("Two tensions have already been specified")
     knot$t2 <- x
-    class(knot) <- c("incompleteKnot", "knot")
+    class(knot) <- c("incompleteKnot", "knot", "mpobj")
+    knot
+}
+
+addToIncompleteKnot.curl <- function(x, knot) {
+    if (!is.null(knot$c2))
+        stop("Two curls have already been specified")
+    knot$c2 <- x
+    class(knot) <- c("incompleteKnot", "knot", "mpobj")
     knot
 }
 
@@ -123,7 +165,7 @@ addToIncompleteKnot.direction <- function(x, knot) {
     if (!is.null(knot$d2))
         stop("Two directions have already been specified")
     knot$d2 <- x
-    class(knot) <- c("incompleteKnot", "knot")
+    class(knot) <- c("incompleteKnot", "knot", "mpobj")
     knot
 }
 
@@ -147,13 +189,21 @@ addToIncompleteKnot.knot <- function(x, knot) {
         knot$tension.right <- knot$t1
         x$tension.left <- knot$t2
     }
-    ## Direction
-    if (!is.null(knot$dir1)) {
-        if (is.null(knot$dir2)) {
-            knot$dir2 <- knot$dir1
+    ## Curl
+    if (!is.null(knot$c1)) {
+        if (is.null(knot$c2)) {
+            knot$c2 <- knot$c1
         }
-        knot$dir.right <- knot$dir1
-        x$dir.left <- knot$dir2
+        knot$curl.right <- knot$c1
+        x$curl.left <- knot$c2
+    }
+    ## Direction
+    if (!is.null(knot$d1)) {
+        if (is.null(knot$d2)) {
+            knot$d2 <- knot$d1
+        }
+        knot$dir.right <- knot$d1
+        x$dir.left <- knot$d2
     }
     path(knot, x)
 }
@@ -167,8 +217,8 @@ addToIncompleteKnot.path <- function(x, knot) {
         }
         knot$cp.right.x <- knot$cp1[1]
         knot$cp.right.y <- knot$cp1[2]
-        x[[1]]$cp.left.x <- knot$cp2[1]
-        x[[1]]$cp.left.y <- knot$cp2[2]
+        x$knots[[1]]$cp.left.x <- knot$cp2[1]
+        x$knots[[1]]$cp.left.y <- knot$cp2[2]
     }
     ## Tension
     if (!is.null(knot$t1)) {
@@ -176,19 +226,25 @@ addToIncompleteKnot.path <- function(x, knot) {
             knot$t2 <- knot$t1
         }
         knot$tension.right <- knot$t1
-        x[[1]]$tension.left <- knot$t2
+        x$knots[[1]]$tension.left <- knot$t2
+    }
+    ## Curl
+    if (!is.null(knot$c1)) {
+        if (is.null(knot$c2)) {
+            knot$c2 <- knot$c1
+        }
+        knot$curl.right <- knot$c1
+        x$knots[[1]]$curl.left <- knot$c2
     }
     ## Direction
-    if (!is.null(knot$dir1)) {
-        if (is.null(knot$dir2)) {
-            knot$dir2 <- knot$dir1
+    if (!is.null(knot$d1)) {
+        if (is.null(knot$d2)) {
+            knot$d2 <- knot$d1
         }
-        knot$dir.right <- knot$dir1
-        x[[1]]$dir.left <- knot$dir2
+        knot$dir.right <- knot$d1
+        x$knots[[1]]$dir.left <- knot$d2
     }
-    path <- c(list(knot), x)
-    class(path) <- "path"
-    path
+    do.call(path, c(list(knot), x))
 }
 
 combine.incompleteKnot <- function(x, y) {
@@ -201,19 +257,25 @@ addToKnot <- function(x, knot) {
 
 addToKnot.controlPoint <- function(x, knot) {
     knot$cp1 <- x
-    class(knot) <- c("incompleteKnot", "knot")
+    class(knot) <- c("incompleteKnot", "knot", "mpobj")
     knot
 }
 
 addToKnot.tension <- function(x, knot) {
     knot$t1 <- x
-    class(knot) <- c("incompleteKnot", "knot")
+    class(knot) <- c("incompleteKnot", "knot", "mpobj")
+    knot
+}
+
+addToKnot.curl <- function(x, knot) {
+    knot$c1 <- x
+    class(knot) <- c("incompleteKnot", "knot", "mpobj")
     knot
 }
 
 addToKnot.direction <- function(x, knot) {
     knot$d1 <- x
-    class(knot) <- c("incompleteKnot", "knot")
+    class(knot) <- c("incompleteKnot", "knot", "mpobj")
     knot
 }
 
@@ -222,135 +284,167 @@ addToKnot.knot <- function(x, knot) {
 }
 
 addToKnot.path <- function(x, knot) {
-    path <- c(list(knot), x)
-    class(path) <- "path"
-    path
+    do.call(path, c(list(knot), x))
 }
 
 combine.knot <- function(x, y) {
     addToKnot(y, x)
 }
 
-addToIncompletePath <- function(x, path) {
+addToIncompletePath <- function(x, p) {
     UseMethod("addToIncompletePath")
 }
 
-addToIncompletePath.controlPoint <- function(x, path) {
-    if (!is.null(path$cp2))
+addToIncompletePath.controlPoint <- function(x, p) {
+    if (!is.null(p$cp2))
         stop("Two control points have already been specified")
-    path$cp2 <- x
-    class(path) <- c("incompletePath", "path")
-    path
+    p$cp2 <- x
+    class(p) <- c("incompletePath", "path", "mpobj")
+    p
 }
 
-addToIncompletePath.tension <- function(x, path) {
-    if (!is.null(path$t2))
+addToIncompletePath.tension <- function(x, p) {
+    if (!is.null(p$t2))
         stop("Two tensions have already been specified")
-    path$t2 <- x
-    class(path) <- c("incompletePath", "path")
-    path
+    p$t2 <- x
+    class(p) <- c("incompletePath", "path", "mpobj")
+    p
 }
 
-addToIncompletePath.direction <- function(x, path) {
-    if (!is.null(path$d2))
+addToIncompletePath.curl <- function(x, p) {
+    if (!is.null(p$c2))
+        stop("Two curls have already been specified")
+    p$c2 <- x
+    class(p) <- c("incompletePath", "path", "mpobj")
+    p
+}
+
+addToIncompletePath.direction <- function(x, p) {
+    if (!is.null(p$d2))
         stop("Two directions have already been specified")
-    path$d2 <- x
-    class(path) <- c("incompletePath", "path")
-    path
+    p$d2 <- x
+    class(p) <- c("incompletePath", "path", "mpobj")
+    p
 }
 
-addToIncompletePath.knot <- function(x, path) {
+addToIncompletePath.knot <- function(x, p) {
     ## Resolve incomplete path
-    n <- length(path)
+    n <- length(p)
     ## Control points
-    if (!is.null(path$cp1)) {
-        if (is.null(path$cp2)) {
-            path$cp2 <- path$cp1
+    if (!is.null(p$cp1)) {
+        if (is.null(p$cp2)) {
+            p$cp2 <- p$cp1
         }
-        path[[n]]$cp.right.x <- path$cp1[1]
-        path[[n]]$cp.right.y <- path$cp1[2]
-        x$cp.left.x <- path$cp2[1]
-        x$cp.left.y <- path$cp2[2]
+        p$knots[[n]]$cp.right.x <- p$cp1[1]
+        p$knots[[n]]$cp.right.y <- p$cp1[2]
+        x$cp.left.x <- p$cp2[1]
+        x$cp.left.y <- p$cp2[2]
     }
     ## Tension
-    if (!is.null(path$t1)) {
-        if (is.null(path$t2)) {
-            path$t2 <- path$t1
+    if (!is.null(p$t1)) {
+        if (is.null(p$t2)) {
+            p$t2 <- p$t1
         }
-        path[[n]]$tension.right <- path$t1
-        x$tension.left <- path$t2
+        p$knots[[n]]$tension.right <- p$t1
+        x$tension.left <- p$t2
+    }
+    ## Curl
+    if (!is.null(p$c1)) {
+        if (is.null(p$c2)) {
+            p$c2 <- p$c1
+        }
+        p$knots[[n]]$curl.right <- p$c1
+        x$curl.left <- p$c2
     }
     ## Direction
-    if (!is.null(path$dir1)) {
-        if (is.null(path$dir2)) {
-            path$dir2 <- path$dir1
+    if (!is.null(p$d1)) {
+        if (is.null(p$d2)) {
+            p$d2 <- p$d1
         }
-        path[[n]]$dir.right <- path$dir1
-        x$dir.left <- path$dir2
+        p$knots[[n]]$dir.right <- p$d1
+        x$dir.left <- p$d2
     }
-    path <- c(path, list(x))
-    class(path) <- "path"
-    path
+    do.call(path, c(p$knots, list(x)))
 }
 
-addToIncompletePath.path <- function(x, path) {
+addToIncompletePath.path <- function(x, p) {
     ## Resolve incomplete path
-    n <- length(path)
+    n <- length(p)
     ## Control points
-    if (!is.null(path$cp1)) {
-        if (is.null(path$cp2)) {
-            path$cp2 <- path$cp1
+    if (!is.null(p$cp1)) {
+        if (is.null(p$cp2)) {
+            p$cp2 <- p$cp1
         }
-        path[[n]]$cp.right.x <- path$cp1[1]
-        path[[n]]$cp.right.y <- path$cp1[2]
-        x[[1]]$cp.left.x <- path$cp2[1]
-        x[[1]]$cp.left.y <- path$cp2[2]
+        p$knots[[n]]$cp.right.x <- p$cp1[1]
+        p$knots[[n]]$cp.right.y <- p$cp1[2]
+        x$knots[[1]]$cp.left.x <- p$cp2[1]
+        x$knots[[1]]$cp.left.y <- p$cp2[2]
     }
     ## Tension
-    if (!is.null(path$t1)) {
-        if (is.null(path$t2)) {
-            path$t2 <- path$t1
+    if (!is.null(p$t1)) {
+        if (is.null(p$t2)) {
+            p$t2 <- p$t1
         }
-        path[[n]]$tension.right <- path$t1
-        x[[1]]$tension.left <- path$t2
+        p$knots[[n]]$tension.right <- p$t1
+        x$knots[[1]]$tension.left <- p$t2
+    }
+    ## Curl
+    if (!is.null(p$c1)) {
+        if (is.null(p$c2)) {
+            p$c2 <- p$c1
+        }
+        p$knots[[n]]$curl.right <- p$t1
+        x$knots[[1]]$curl.left <- p$t2
     }
     ## Direction
-    if (!is.null(path$dir1)) {
-        if (is.null(path$dir2)) {
-            path$dir2 <- path$dir1
+    if (!is.null(p$d1)) {
+        if (is.null(p$d2)) {
+            p$d2 <- p$d1
         }
-        path[[n]]$dir.right <- path$dir1
-        x[[1]]$dir.left <- path$dir2
+        p$knots[[n]]$dir.right <- p$d1
+        x$knots[[1]]$dir.left <- p$d2
     }
-    path <- c(path, x)
-    class(path) <- "path"
-    path
+    do.call(path, c(p$knots, x$knots))
 }
 
 combine.incompletePath <- function(x, y) {
     addToIncompletePath(y, x)
 }
 
-addToPath <- function(x, path) {
+addToPath <- function(x, p) {
     UseMethod("addToPath")
 }
 
-addToPath.controlPoint <- function(x, path) {
-    path$cp1 <- x
-    class(path) <- c("incompletePath", "path")
-    path
+addToPath.controlPoint <- function(x, p) {
+    p$cp1 <- x
+    class(p) <- c("incompletePath", "path", "mpobj")
+    p
 }
 
-addToPath.knot <- function(x, path) {
-    path <- c(path, list(x))
-    class(path) <- "path"
-    path
+addToPath.tension <- function(x, p) {
+    p$t1 <- x
+    class(p) <- c("incompletePath", "path", "mpobj")
+    p
 }
 
-addToPath.path <- function(x, path) {
-    path <- c(path, x)
-    class(path) <- "path"
-    path    
+addToPath.curl <- function(x, p) {
+    p$c1 <- x
+    class(p) <- c("incompletePath", "path", "mpobj")
+    p
+}
+
+addToPath.direction <- function(x, p) {
+    p$d1 <- x
+    class(p) <- c("incompletePath", "path", "mpobj")
+    p
+}
+
+addToPath.knot <- function(x, p) {
+    do.call(path, c(p$knots, list(x)))
+}
+
+addToPath.path <- function(x, p) {
+    do.call(path, c(p$knots, x$knots))
 }
 
 combine.path <- function(x, y) {
@@ -358,39 +452,61 @@ combine.path <- function(x, y) {
 }
 
 ## Operations for building up paths
-Ops.knot <- function(e1, e2) {
-    if (.Generic != "+") {
-        stop("Invalid operation on knots")
-    }
+
+## e1 + e2 is equivalent to e1..e2
+## e1 - e2 is equivalent to e1--e2
+## e1 %+% e2 is equivalent to e1...e2
+## e1 %-% e2 is equivalent to e1---e2
+
+## Page 129 of The MetaFont Book
+## http://www.ctex.org/documents/shredder/src/mfbook.pdf
+## says ...
+
+## -- is an abbreviation for ‘{curl 1}..{curl 1}’
+## ... is an abbreviation for ‘..tension atleast 1..’
+## --- is an abbreviation for ‘..tension infinity..’
+
+## TODO
+## What about adding a connector to a path ?
+## What about adding a path to a path ?
+## Need a superclass above all of paths, knots, and connectors ?
+Ops.mpobj <- function(e1, e2) {
     if (nargs() < 2) {
         stop("Unary operations not valid on knots")
     }
-    if ((inherits(e1, "knot") && inherits(e2, "knot")) ||
-        inherits(e1, "path") ||
-        inherits(e1, "connecter") ||
-        inherits(e2, "path") ||
-        inherits(e2, "connector")) {
-        combine(e1, e2)
+    if (!(.Generic %in% c("+", "-"))) {
+        stop("Invalid operation on knots")
+    }
+    if (.Generic == "-") {
+        if ((inherits(e1, "knot") || inherits(e1, "path")) &&
+            (inherits(e2, "knot") || inherits(e2, "path"))) {
+            e1 + curl(1) + curl(1) + e2
+        } else {
+            stop("It is only valid to use '-' between knots and paths")
+        }
     } else {
-        stop("It is only valid to combine a knot with a path or a connector")
+        if (inherits(e1, "knot") || inherits(e1, "path")) {
+            combine(e1, e2)
+        } else {
+            stop("It is only valid to combine a connector with a knot or path")
+        }
     }
 }
 
-Ops.path <- function(e1, e2) {
-    if (.Generic != "+") {
-        stop("Invalid operation on paths")
-    }
-    if (nargs() < 2) {
-        stop("Unary operations not valid on paths")
-    }
-    if ((inherits(e1, "knot") && inherits(e2, "knot")) ||
-        inherits(e1, "knot") ||
-        inherits(e1, "connecter") ||
-        inherits(e2, "knot") ||
-        inherits(e2, "connector")) {
-        combine(e1, e2)
+"%+%" <- function(e1, e2) {
+    if ((inherits(e1, "knot") || inherits(e1, "path")) &&
+        (inherits(e2, "knot") || inherits(e2, "path"))) {
+        e1 + tension(-1) + e2
     } else {
-        stop("It is only valid to combine a knot with a path or a connector")
+        stop("It is only valid to use '%+%' between knots and paths")
     }
 }
 
+"%-%" <- function(e1, e2) {
+    if ((inherits(e1, "knot") || inherits(e1, "path")) &&
+        (inherits(e2, "knot") || inherits(e2, "path"))) {
+        e1 + tension(Inf) + e2
+    } else {
+        stop("It is only valid to use '%+%' between knots and paths")
+    }
+}

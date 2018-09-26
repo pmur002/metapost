@@ -37,26 +37,35 @@ knot(0, 0) + knot(1, 1, tension.left=-4)
 knot(0, 0) + tension(-4) + knot(1, 1)
 ## Vectorised knot
 knot(1:3, 0) + tension(-4) + knot(1, 1)
+## Different operators
+knot(0, 0) - knot(1, 1)
+knot(0, 0) %+% knot(1, 1)
+knot(0, 0) %-% knot(1, 1)
+## More than two knots
+knot(0, 0) + knot(1, 1) + knot(2, 2)
+knot(0, 0) + knot(1, 1) + knot(2, 2) + knot(3, 3)
+## Cycle
+knot(0, 0) + knot(1, 1) + cycle()
+##   vectorised connector 
+knot(0, 0) + dir(1, 0) + knot(1, 1)
+knot(0, 0) + dir(10) + knot(1, 1)
+knot(0, 0) + dir(1:4*10) + knot(1, 1)
+## Add path to path
+p1 <- knot(0, 0) + knot(1, 1)
+p2 <- knot(2, 2) + knot(3, 3)
+p1 + p2
 
-## TODO:
-##   cycle()
-##   knot - knot
-##   vectorised connectors
-
-
+## MetaPost examples 
 ## p := (0,0)..(10,10)..(10,-5)..cycle;
-
-## knot(0, 0) + knot(10, 10) + knot(10, -5) + cycle()
-
+knot(0, 0) + knot(10, 10) + knot(10, -5) + cycle()
 ## p := (0,0)..
 ##      (2,20)--
 ##      (10, 5)..controls (2,2) and (9,4.5)..
 ##      (3,10)..tension 3 and atleast 4 ..
 ##      (1,14){2,0} .. {0,1}(5,-4);
-
-## knot(0, 0) +
-## knot(2, 20) -
-## knot(10, 5) + cp(2, 2) + cp(9, 4.5) +
-## knot(3, 10) + tension(3) + tension(-4) +
-## knot(1, 14) + dir(2, 0) + dir(0, 1) +
-## knot(5, -4)
+knot(0, 0) +
+    knot(2, 20) -
+    knot(10, 5) + cp(2, 2) + cp(9, 4.5) +
+    knot(3, 10) + tension(3) + tension(-4) +
+    knot(1, 14) + dir(2, 0) + dir(0, 1) +
+    knot(5, -4)
