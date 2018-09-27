@@ -1,0 +1,16 @@
+
+export("knot",
+       "tension",
+       "curl",
+       "dir",
+       "cp",
+       "cycle",
+
+       "%+%",
+       "%-%")
+
+S3method("length", "knot")
+S3method("length", "path")
+S3method("print", "knot")
+S3method("print", "path")
+S3method("Ops", "mpobj")

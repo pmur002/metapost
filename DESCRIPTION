@@ -1,0 +1,12 @@
+Package: metapost
+Type: Package
+Title: R Interface to MetaPost
+Version: 1.0
+Author: Paul Murrell
+Maintainer: Paul Murrell <paul@stat.auckland.ac.nz>
+Description: Provides an R interface to METAPOST.
+    There are functions to generate an R description of a MetaPost
+    curve, functions to generate MetaPost code from an R description,
+    functions to process MetaPost code, and functions to read
+    solved MetaPost paths back into R.
+License: GPL (>= 2)

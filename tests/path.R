@@ -1,6 +1,5 @@
 
-source("path.R")
-source("R2mp.R")
+library(metapost)
 
 ## Errors
 ## Both direction and curl specified
