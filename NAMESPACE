@@ -1,16 +1,19 @@
 
-export("knot",
-       "tension",
+export("cp",
        "curl",
-       "dir",
-       "cp",
        "cycle",
+       "dir",
+       "knot",
+       "tension",
 
        "%+%",
-       "%-%")
+       "%-%",
+
+       "metapost",
+       "mpost")
 
 S3method("length", "knot")
 S3method("length", "path")
+S3method("Ops", "mpobj")
 S3method("print", "knot")
 S3method("print", "path")
-S3method("Ops", "mpobj")
