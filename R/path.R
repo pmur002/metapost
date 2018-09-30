@@ -6,6 +6,7 @@
 
 ## Individual knots
 knot <- function(x, y,
+                 units="pt",
                  dir=NA, dir.left=dir, dir.right=dir,
                  cp.left.x=NA, cp.right.x=NA,
                  cp.left.y=NA, cp.right.y=NA,
@@ -24,6 +25,10 @@ knot <- function(x, y,
     if (any(!(is.na(cp.right.x) | is.na(cp.right.y)) &
             !is.na(tension.right)))
         stop("Invalid to specify both control point and tension at once")
+    if (!is.unit(x))
+        x <- unit(x, units)
+    if (!is.unit(y))
+        y <- unit(y, units)
     k <- list(x=x, y=y,
               dir.left=dir.left, dir.right=dir.right,
               cp.left.x=cp.left.x, cp.right.x=cp.right.x,

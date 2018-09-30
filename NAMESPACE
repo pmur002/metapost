@@ -1,4 +1,9 @@
 
+importFrom("grid",
+           "convertX",
+           "convertY",
+           "is.unit")
+
 export("cp",
        "curl",
        "cycle",

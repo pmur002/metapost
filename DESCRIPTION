@@ -9,4 +9,5 @@ Description: Provides an R interface to METAPOST.
     curve, functions to generate MetaPost code from an R description,
     functions to process MetaPost code, and functions to read
     solved MetaPost paths back into R.
+Imports: grid
 License: GPL (>= 2)

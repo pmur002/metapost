@@ -37,7 +37,9 @@ as.character.knot <- function(x, ..., first=FALSE, last=FALSE) {
                                            "}")
         }
     }
-    paste0(dir.left, "(", x$x, ",", x$y, ")", dir.right)
+    paste0(dir.left,
+           "(", convertX(x$x, "in"), ",",
+           convertY(x$y, "in"), ")", dir.right)
 }
 
 as.character.cycle <- function(x, ...) {
