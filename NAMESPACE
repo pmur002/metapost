@@ -2,7 +2,8 @@
 importFrom("grid",
            "convertX",
            "convertY",
-           "is.unit")
+           "is.unit",
+           "unit")
 
 export("cp",
        "curl",
