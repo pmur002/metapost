@@ -62,6 +62,8 @@ mptrace <- function(logfile, psfile) {
     nBefore <- length(beforeStart)
     afterStart <- grep("^Path .+ after choices", log)
     nAfter <- length(afterStart)
+    if (!nAfter)
+        stop("Log file does not contain any tracing output")
     blankline <- "^$"
     ends <- grep(blankline, log)[1:(nBefore + nAfter)]
     starts <- c(beforeStart, afterStart)
@@ -77,7 +79,6 @@ mptrace <- function(logfile, psfile) {
                     info[info$type == "paths", 2],
                     SIMPLIFY=FALSE)
     pathControls <- lapply(paths, parsePath)
-    pathGrobs <- 
     gTree(children=do.call("gList", lapply(pathControls, pathGrobs)),
           vp=imageVP(psfile))
 }

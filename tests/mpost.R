@@ -12,7 +12,6 @@ library(grImport)
 PostScriptTrace("fig.1")
 fig <- readPicture("fig.1.xml")
 
-grid.newpage()
 pushViewport(viewport(y=.5, height=.5, just="bottom"))
 grid.draw(curves)
 upViewport()
