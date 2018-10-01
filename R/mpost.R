@@ -27,6 +27,6 @@ mpost <- function(file) {
     } else {
         tracingOpt <- paste0("-s tracingchoices=", tracing)
     }
-    system2(cmd, args=paste(file, templateOpt, formatOpt, tracingOpt))
+    system2(cmd, args=paste(templateOpt, formatOpt, tracingOpt, file))
 }
 

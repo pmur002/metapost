@@ -15,7 +15,10 @@ export("cp",
        "%-%",
 
        "metapost",
-       "mpost")
+       
+       "mpost",
+
+       "mptrace")
 
 S3method("length", "knot")
 S3method("length", "path")
