@@ -207,6 +207,8 @@ addToIncompleteKnot.knot <- function(x, knot) {
         knot$cp.right.y <- cpy(knot$cp1)
         x$cp.left.x <- cpx(knot$cp2)
         x$cp.left.y <- cpy(knot$cp2)
+        knot$cp1 <- NULL
+        knot$cp2 <- NULL
     }
     ## Tension
     if (!is.null(knot$t1)) {
@@ -215,6 +217,8 @@ addToIncompleteKnot.knot <- function(x, knot) {
         }
         knot$tension.right <- knot$t1
         x$tension.left <- knot$t2
+        knot$t1 <- NULL
+        knot$t2 <- NULL
     }
     ## Curl
     if (!is.null(knot$c1)) {
@@ -223,6 +227,8 @@ addToIncompleteKnot.knot <- function(x, knot) {
         }
         knot$curl.right <- knot$c1
         x$curl.left <- knot$c2
+        knot$c1 <- NULL
+        knot$c2 <- NULL
     }
     ## Direction
     if (!is.null(knot$d1)) {
@@ -231,6 +237,8 @@ addToIncompleteKnot.knot <- function(x, knot) {
         }
         knot$dir.right <- knot$d1
         x$dir.left <- knot$d2
+        knot$d1 <- NULL
+        knot$d2 <- NULL
     }
     path(knot, x)
 }
@@ -246,6 +254,8 @@ addToIncompleteKnot.path <- function(x, knot) {
         knot$cp.right.y <- cpy(knot$cp1)
         x$knots[[1]]$cp.left.x <- cpx(knot$cp2)
         x$knots[[1]]$cp.left.y <- cpy(knot$cp2)
+        knot$cp1 <- NULL
+        knot$cp2 <- NULL
     }
     ## Tension
     if (!is.null(knot$t1)) {
@@ -254,6 +264,8 @@ addToIncompleteKnot.path <- function(x, knot) {
         }
         knot$tension.right <- knot$t1
         x$knots[[1]]$tension.left <- knot$t2
+        knot$t1 <- NULL
+        knot$t2 <- NULL
     }
     ## Curl
     if (!is.null(knot$c1)) {
@@ -262,6 +274,8 @@ addToIncompleteKnot.path <- function(x, knot) {
         }
         knot$curl.right <- knot$c1
         x$knots[[1]]$curl.left <- knot$c2
+        knot$c1 <- NULL
+        knot$c2 <- NULL
     }
     ## Direction
     if (!is.null(knot$d1)) {
@@ -270,6 +284,8 @@ addToIncompleteKnot.path <- function(x, knot) {
         }
         knot$dir.right <- knot$d1
         x$knots[[1]]$dir.left <- knot$d2
+        knot$d1 <- NULL
+        knot$d2 <- NULL
     }
     do.call(path, c(list(knot), x))
 }
