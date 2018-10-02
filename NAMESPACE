@@ -4,9 +4,13 @@ importFrom("grid",
            "convertX",
            "convertY",
            "gList",
+           "gpar",
+           "grid.draw",
            "grid.layout",
            "gTree",
            "is.unit",
+           "makeContent",
+           "setChildren",
            "unit",
            "viewport",
            "vpStack")
@@ -17,18 +21,19 @@ export("cp",
        "dir",
        "knot",
        "tension",
-
        "%+%",
        "%-%",
 
        "metapost",
-       
        "mpost",
+       "mptrace",
 
-       "mptrace")
+       "grid.metapost",
+       "metapostGrob")
 
 S3method("length", "knot")
 S3method("length", "path")
 S3method("Ops", "mpobj")
+S3method("makeContent", "metapostgrob")
 S3method("print", "knot")
 S3method("print", "path")
