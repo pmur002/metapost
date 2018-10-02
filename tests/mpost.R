@@ -6,7 +6,7 @@ metapost(p, "fig.mp")
 options(MP.tracingchoices=1)
 mpost("fig.mp")
 
-curves <- mptrace("fig.log", "fig.1")
+curves <- mptrace("fig.log")
 
 library(grImport)
 PostScriptTrace("fig.1")

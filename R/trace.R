@@ -34,24 +34,10 @@ pathGrobs <- function(controls) {
     index <- unlist(lapply(1:ncurves, function(i) ((i-1)*3 + 1):(i*3 + 1)))
     bezierGrob(controls[index, 1], controls[index, 2],
                id=rep(1:ncurves, each=4),
-               default.units="native")
+               default.units="pt")
 }
 
-imageVP <- function(psfile) {
-    ## Grab bounding box from PostScript output
-    pscode <- readLines(psfile)
-    bboxline <- grep("%%HiResBoundingBox", pscode)
-    bboxVals <- strsplit(gsub("^.+? ", "", pscode[bboxline]), " ")[[1]]
-    bbox <- as.numeric(bboxVals)
-    dx <- diff(bbox[c(1, 3)])
-    dy <- diff(bbox[c(2, 4)])
-    vpStack(viewport(layout=grid.layout(1, 1, widths=dx, heights=dy,
-                                        respect=TRUE)),
-            viewport(layout.pos.col=1,
-                     xscale=bbox[c(1, 3)], yscale=bbox[c(2, 4)]))
-}
-
-mptrace <- function(logfile, psfile) {
+mptrace <- function(logfile) {
     log <- readLines(logfile)
     if (!grepl("This is MetaPost", log[1]))
         stop("File does not appear to be a MetaPost log file")
@@ -76,8 +62,7 @@ mptrace <- function(logfile, psfile) {
                     info[info$type == "paths", 2],
                     SIMPLIFY=FALSE)
     pathControls <- lapply(paths, parsePath)
-    gTree(children=do.call("gList", lapply(pathControls, pathGrobs)),
-          vp=imageVP(psfile))
+    gTree(children=do.call("gList", lapply(pathControls, pathGrobs)))
 }
 
 
