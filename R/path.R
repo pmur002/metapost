@@ -29,6 +29,14 @@ knot <- function(x, y,
         x <- unit(x, units)
     if (!is.unit(y))
         y <- unit(y, units)
+    if (!is.unit(cp.left.x))
+        cp.left.x <- unit(cp.left.x, units)
+    if (!is.unit(cp.left.y))
+        cp.left.y <- unit(cp.left.y, units)
+    if (!is.unit(cp.right.x))
+        cp.right.x <- unit(cp.right.x, units)
+    if (!is.unit(cp.right.y))
+        cp.right.y <- unit(cp.right.y, units)
     k <- list(x=x, y=y,
               dir.left=dir.left, dir.right=dir.right,
               cp.left.x=cp.left.x, cp.right.x=cp.right.x,
@@ -56,10 +64,24 @@ cycle <- function() {
 
 ## Knot connectors
 ## Explicit control points
-cp <- function(x, y) {
-    z <- c(x, y)
+cp <- function(x, y, units="pt") {
+    z <- list(x=x, y=y, units=units)
     class(z) <- c("controlPoint", "connector", "mpobj")
     z
+}
+
+cpx <- function(cp) {
+    if (!is.unit(cp$x))
+        unit(cp$x, cp$units)
+    else 
+        cp$x
+}
+
+cpy <- function(cp) {
+    if (!is.unit(cp$y))
+        unit(cp$y, cp$units)
+    else 
+        cp$y
 }
 
 ## Directions
@@ -181,10 +203,10 @@ addToIncompleteKnot.knot <- function(x, knot) {
         if (is.null(knot$cp2)) {
             knot$cp2 <- knot$cp1
         }
-        knot$cp.right.x <- knot$cp1[1]
-        knot$cp.right.y <- knot$cp1[2]
-        x$cp.left.x <- knot$cp2[1]
-        x$cp.left.y <- knot$cp2[2]
+        knot$cp.right.x <- cpx(knot$cp1)
+        knot$cp.right.y <- cpy(knot$cp1)
+        x$cp.left.x <- cpx(knot$cp2)
+        x$cp.left.y <- cpy(knot$cp2)
     }
     ## Tension
     if (!is.null(knot$t1)) {
@@ -220,10 +242,10 @@ addToIncompleteKnot.path <- function(x, knot) {
         if (is.null(knot$cp2)) {
             knot$cp2 <- knot$cp1
         }
-        knot$cp.right.x <- knot$cp1[1]
-        knot$cp.right.y <- knot$cp1[2]
-        x$knots[[1]]$cp.left.x <- knot$cp2[1]
-        x$knots[[1]]$cp.left.y <- knot$cp2[2]
+        knot$cp.right.x <- cpx(knot$cp1)
+        knot$cp.right.y <- cpy(knot$cp1)
+        x$knots[[1]]$cp.left.x <- cpx(knot$cp2)
+        x$knots[[1]]$cp.left.y <- cpy(knot$cp2)
     }
     ## Tension
     if (!is.null(knot$t1)) {
@@ -340,10 +362,10 @@ addToIncompletePath.knot <- function(x, p) {
         if (is.null(p$cp2)) {
             p$cp2 <- p$cp1
         }
-        p$knots[[n]]$cp.right.x <- p$cp1[1]
-        p$knots[[n]]$cp.right.y <- p$cp1[2]
-        x$cp.left.x <- p$cp2[1]
-        x$cp.left.y <- p$cp2[2]
+        p$knots[[n]]$cp.right.x <- cpx(p$cp1)
+        p$knots[[n]]$cp.right.y <- cpy(p$cp1)
+        x$cp.left.x <- cpx(p$cp2)
+        x$cp.left.y <- cpy(p$cp2)
     }
     ## Tension
     if (!is.null(p$t1)) {
@@ -380,10 +402,10 @@ addToIncompletePath.path <- function(x, p) {
         if (is.null(p$cp2)) {
             p$cp2 <- p$cp1
         }
-        p$knots[[n]]$cp.right.x <- p$cp1[1]
-        p$knots[[n]]$cp.right.y <- p$cp1[2]
-        x$knots[[1]]$cp.left.x <- p$cp2[1]
-        x$knots[[1]]$cp.left.y <- p$cp2[2]
+        p$knots[[n]]$cp.right.x <- cpx(p$cp1)
+        p$knots[[n]]$cp.right.y <- cpy(p$cp1)
+        x$knots[[1]]$cp.left.x <- cpx(p$cp2)
+        x$knots[[1]]$cp.left.y <- cpy(p$cp2)
     }
     ## Tension
     if (!is.null(p$t1)) {

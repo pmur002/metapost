@@ -2,7 +2,7 @@
 ## Convert R objects to MetaPost path
 
 ## R path to MetaPost code
-as.character.knot <- function(x, ..., first=FALSE, last=FALSE) {
+as.character.knot <- function(x, ..., first=FALSE, last=FALSE, digits=2) {
     n <- length(x)
     x <- lapply(x, rep, length=n)
     dir.left <- rep("", n)
@@ -38,8 +38,9 @@ as.character.knot <- function(x, ..., first=FALSE, last=FALSE) {
         }
     }
     paste0(dir.left,
-           "(", convertX(x$x, "in"), ",",
-           convertY(x$y, "in"), ")", dir.right)
+           "(", round(convertX(x$x, "in", valueOnly=TRUE), digits), "in,",
+           round(convertY(x$y, "in", valueOnly=TRUE), digits), "in)",
+           dir.right)
 }
 
 as.character.cycle <- function(x, ...) {
@@ -47,7 +48,7 @@ as.character.cycle <- function(x, ...) {
 }
 
 ## Construct connector string between two knots
-connectorString <- function(x, y) {
+connectorString <- function(x, y, digits) {
     ## First knot
     isnatension.right <- is.na(x$tension.right)
     isnacp.right <- is.na(x$cp.right.x) | is.na(x$cp.right.y)
@@ -63,8 +64,13 @@ connectorString <- function(x, y) {
     }
     if (!all(isnacp.right)) {
         tension.right[!isnacp.right] <-
-            paste0("controls (", x$cp.right.x[!isnacp.right],
-                   ",", x$cp.right.y[!isnacp.right], ")")
+            paste0("controls (",
+                   round(convertX(x$cp.right.x[!isnacp.right], "in",
+                                  valueOnly=TRUE), digits),
+                   "in,",
+                   round(convertY(x$cp.right.y[!isnacp.right], "in",
+                                  valueOnly=TRUE), digits),
+                   "in)")
     }
     ## Second knot
     ## knot() constructor has enforced that tension and cp not both spec'ed
@@ -92,31 +98,40 @@ connectorString <- function(x, y) {
     if (!all(isnacp.left)) {
         tension.left[!isnacp.left] <-
             paste0(tension.left[!isnacp.left],
-                   "(", y$cp.left.x[!isnacp.left],
-                   ",", y$cp.left.y[!isnacp.left], ")")
+                   "(",
+                   round(convertX(y$cp.left.x[!isnacp.left], "in",
+                                  valueOnly=TRUE), digits),
+                   "in,",
+                   round(convertY(y$cp.left.y[!isnacp.left], "in",
+                                  valueOnly=TRUE), digits),
+                   "in)")
     }
     ifelse(nchar(tension.right) | nchar(tension.left),
            paste0("..", tension.right, tension.left, ".."),
            "..")
 }
 
-connectKnot <- function(x, y, last=FALSE) {
-    paste0(connectorString(x, y), as.character(y, last=last))
+connectKnot <- function(x, y, last=FALSE, digits=2) {
+    paste0(connectorString(x, y, digits),
+           as.character(y, last=last, digits=digits))
 }
 
-as.character.path <- function(x, ...) {
+as.character.path <- function(x, ..., digits=2) {
     n <- length(x)
     if (n == 1) {
-        as.character(x$knots[[1]], first=TRUE, last=TRUE)
+        as.character(x$knots[[1]], first=TRUE, last=TRUE, digits=digits)
     } else if (n == 2) {
-        paste0(as.character(x$knots[[1]], first=TRUE),
-               connectKnot(x$knots[[1]], x$knots[[2]], last=TRUE))
+        paste0(as.character(x$knots[[1]], first=TRUE, digits=digits),
+               connectKnot(x$knots[[1]], x$knots[[2]],
+                           last=TRUE, digits=digits))
     } else {
-        paste0(as.character(x$knots[[1]], first=TRUE),
+        paste0(as.character(x$knots[[1]], first=TRUE, digits=digits),
                paste0(mapply(connectKnot,
-                             x$knots[-(n - 1:0)], x$knots[-c(1, n)]),
+                             x$knots[-(n - 1:0)], x$knots[-c(1, n)],
+                             MoreArgs=list(digits=digits)),
                       collapse=""),
-               connectKnot(x$knots[[n - 1]], x$knots[[n]], last=TRUE))
+               connectKnot(x$knots[[n - 1]], x$knots[[n]],
+                           last=TRUE, digits=digits))
     }
 }
 
