@@ -31,13 +31,10 @@ parsePath <- function(path) {
 
 pathGrobs <- function(controls) {
     ncurves <- (nrow(controls) - 1) %/% 3
-    curve <- vector("list", ncurves)
-    for (i in 1:ncurves) {
-        subset <- ((i-1)*3 + 1):(i*3 + 1)
-        curve[[i]] <- bezierGrob(controls[subset, 1], controls[subset, 2],
-                                 default.units="native")
-    }
-    gTree(children=do.call("gList", curve))
+    index <- unlist(lapply(1:ncurves, function(i) ((i-1)*3 + 1):(i*3 + 1)))
+    bezierGrob(controls[index, 1], controls[index, 2],
+               id=rep(1:ncurves, each=4),
+               default.units="native")
 }
 
 imageVP <- function(psfile) {

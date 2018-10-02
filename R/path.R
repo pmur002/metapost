@@ -6,7 +6,7 @@
 
 ## Individual knots
 knot <- function(x, y,
-                 units="pt",
+                 units=getOption("metapost.units"),
                  dir=NA, dir.left=dir, dir.right=dir,
                  cp.left.x=NA, cp.right.x=NA,
                  cp.left.y=NA, cp.right.y=NA,
@@ -64,7 +64,7 @@ cycle <- function() {
 
 ## Knot connectors
 ## Explicit control points
-cp <- function(x, y, units="pt") {
+cp <- function(x, y, units=getOption("metapost.units")) {
     z <- list(x=x, y=y, units=units)
     class(z) <- c("controlPoint", "connector", "mpobj")
     z
