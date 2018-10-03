@@ -27,6 +27,8 @@ export("cp",
        "metapost",
        "mpost",
        "mptrace",
+       "mpbbox",
+       "mpvp",
 
        "grid.metapost",
        "metapostGrob")

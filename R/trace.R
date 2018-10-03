@@ -65,4 +65,18 @@ mptrace <- function(logfile) {
     gTree(children=do.call("gList", lapply(pathControls, pathGrobs)))
 }
 
+mpbbox <- function(psfile) {
+    ## Grab bounding box from PostScript output
+    pscode <- readLines(psfile)
+    bboxline <- grep("%%HiResBoundingBox", pscode)
+    bboxVals <- strsplit(gsub("^.+? ", "", pscode[bboxline]), " ")[[1]]
+    as.numeric(bboxVals)
+}
 
+mpvp <- function(psfile, ...) {
+    bbox <- mpbbox(psfile)
+    dx <- diff(bbox[c(1, 3)])
+    dy <- diff(bbox[c(2, 4)])
+    viewport(width=unit(dx, "pt"), height=unit(dy, "pt"), ...)
+}    
+                    
