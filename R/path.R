@@ -231,12 +231,14 @@ addToIncompleteKnot.knot <- function(x, knot) {
         knot$c2 <- NULL
     }
     ## Direction
+    ## NOTE: do NOT repeat direction by default
+    ##       (unlike curl and tension and control points, 
+    ##        direction applies to knot rather than edge[?])
     if (!is.null(knot$d1)) {
-        if (is.null(knot$d2)) {
-            knot$d2 <- knot$d1
-        }
         knot$dir.right <- knot$d1
-        x$dir.left <- knot$d2
+        if (!is.null(knot$d2)) {
+            x$dir.left <- knot$d2
+        }
         knot$d1 <- NULL
         knot$d2 <- NULL
     }
@@ -278,12 +280,14 @@ addToIncompleteKnot.path <- function(x, knot) {
         knot$c2 <- NULL
     }
     ## Direction
+    ## NOTE: do NOT repeat direction by default
+    ##       (unlike curl and tension and control points, 
+    ##        direction applies to knot rather than edge[?])
     if (!is.null(knot$d1)) {
-        if (is.null(knot$d2)) {
-            knot$d2 <- knot$d1
-        }
         knot$dir.right <- knot$d1
-        x$knots[[1]]$dir.left <- knot$d2
+        if (!is.null(knot$d2)) {
+            x$knots[[1]]$dir.left <- knot$d2
+        }
         knot$d1 <- NULL
         knot$d2 <- NULL
     }
@@ -400,12 +404,14 @@ addToIncompletePath.knot <- function(x, p) {
         x$curl.left <- p$c2
     }
     ## Direction
+    ## NOTE: do NOT repeat direction by default
+    ##       (unlike curl and tension and control points, 
+    ##        direction applies to knot rather than edge[?])
     if (!is.null(p$d1)) {
-        if (is.null(p$d2)) {
-            p$d2 <- p$d1
-        }
         p$knots[[n]]$dir.right <- p$d1
-        x$dir.left <- p$d2
+        if (!is.null(p$d2)) {
+            x$dir.left <- p$d2
+        }
     }
     do.call(path, c(p$knots, list(x)))
 }
@@ -440,12 +446,14 @@ addToIncompletePath.path <- function(x, p) {
         x$knots[[1]]$curl.left <- p$t2
     }
     ## Direction
+    ## NOTE: do NOT repeat direction by default
+    ##       (unlike curl and tension and control points, 
+    ##        direction applies to knot rather than edge[?])
     if (!is.null(p$d1)) {
-        if (is.null(p$d2)) {
-            p$d2 <- p$d1
-        }
         p$knots[[n]]$dir.right <- p$d1
-        x$knots[[1]]$dir.left <- p$d2
+        if (!is.null(p$d2)) {
+            x$knots[[1]]$dir.left <- p$d2
+        }
     }
     do.call(path, c(p$knots, x$knots))
 }
