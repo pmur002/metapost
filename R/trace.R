@@ -30,10 +30,7 @@ parsePath <- function(path) {
 }
 
 pathGrobs <- function(controls, pathIndex) {
-    ncurves <- (nrow(controls) - 1) %/% 3
-    index <- unlist(lapply(1:ncurves, function(i) ((i-1)*3 + 1):(i*3 + 1)))
-    bezierGrob(controls[index, 1], controls[index, 2],
-               id=rep(1:ncurves, each=4),
+    BezierGrob(controls[,1], controls[,2],
                default.units="pt",
                name=paste0("path-", pathIndex))
 }

@@ -1,6 +1,5 @@
 
 importFrom("grid",
-           "bezierGrob",
            "convertX",
            "convertY",
            "gList",
@@ -14,6 +13,9 @@ importFrom("grid",
            "unit",
            "viewport",
            "vpStack")
+
+importFrom("gridBezier",
+           "BezierGrob")
 
 export("cp",
        "curl",
