@@ -24,13 +24,14 @@ parsePath <- function(path) {
     }
     locs <- matrix(scan(textConnection(locStr)), byrow=TRUE, ncol=2)
     if (cycle) {
-        locs <- rbind(locs, locs[1,])
+        attr(locs, "cycle") <- TRUE
     }
     locs
 }
 
 pathGrobs <- function(controls, pathIndex) {
     BezierGrob(controls[,1], controls[,2],
+               open=is.null(attr(controls, "cycle")),
                default.units="pt",
                name=paste0("path-", pathIndex))
 }
