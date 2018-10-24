@@ -23,10 +23,11 @@ parsePath <- function(path) {
         locStr <- locStr[-length(locStr)]
     }
     locs <- matrix(scan(textConnection(locStr)), byrow=TRUE, ncol=2)
+    controls <- list(x=locs[,1], y=locs[,2])
     if (cycle) {
-        attr(locs, "cycle") <- TRUE
+        attr(controls, "cycle") <- TRUE
     }
-    locs
+    controls
 }
 
 mptrace <- function(logfile, name=NULL) {
