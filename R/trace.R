@@ -29,13 +29,6 @@ parsePath <- function(path) {
     locs
 }
 
-pathGrobs <- function(controls, pathIndex) {
-    BezierGrob(controls[,1], controls[,2],
-               open=is.null(attr(controls, "cycle")),
-               default.units="pt",
-               name=paste0("path-", pathIndex))
-}
-
 mptrace <- function(logfile, name=NULL) {
     log <- readLines(logfile)
     if (!grepl("This is MetaPost", log[1]))
@@ -61,10 +54,8 @@ mptrace <- function(logfile, name=NULL) {
                     info[info$type == "paths", 2],
                     SIMPLIFY=FALSE)
     pathControls <- lapply(paths, parsePath)
-    gTree(children=do.call("gList",
-                           mapply(pathGrobs, pathControls, 1:length(paths),
-                                  SIMPLIFY=FALSE)),
-          name=name)
+    class(pathControls) <- "mpcontrols"
+    pathControls
 }
 
 mpbbox <- function(psfile) {

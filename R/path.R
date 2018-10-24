@@ -135,7 +135,7 @@ path.knot <- function(x, ..., cycle=FALSE) {
     if (!all(sapply(knots, inherits, "knot")))
         stop("Path must contain only knots")
     p <- list(knots=knots)
-    class(p) <- c("path", "mpobj")
+    class(p) <- c("mppath", "mpobj")
     p
 }
 
@@ -143,11 +143,11 @@ path.knot <- function(x, ..., cycle=FALSE) {
 path.matrix <- function(x, ..., cycle=FALSE) {
 }
 
-length.path <- function(x) {
+length.mppath <- function(x) {
     length(x$knots)
 }
 
-print.path <- function(x, ...) {
+print.mppath <- function(x, ...) {
     cat(as.character(x, ...), sep="\n")
 }
 
@@ -245,7 +245,7 @@ addToIncompleteKnot.knot <- function(x, knot) {
     path(knot, x)
 }
 
-addToIncompleteKnot.path <- function(x, knot) {
+addToIncompleteKnot.mppath <- function(x, knot) {
     ## Resolve incomplete knot
     ## Control points
     if (!is.null(knot$cp1)) {
@@ -330,7 +330,7 @@ addToKnot.knot <- function(x, knot) {
     path(knot, x)
 }
 
-addToKnot.path <- function(x, knot) {
+addToKnot.mppath <- function(x, knot) {
     do.call(path, c(list(knot), x))
 }
 
@@ -346,7 +346,7 @@ addToIncompletePath.controlPoint <- function(x, p) {
     if (!is.null(p$cp2))
         stop("Two control points have already been specified")
     p$cp2 <- x
-    class(p) <- c("incompletePath", "path", "mpobj")
+    class(p) <- c("incompletePath", "mppath", "mpobj")
     p
 }
 
@@ -354,7 +354,7 @@ addToIncompletePath.tension <- function(x, p) {
     if (!is.null(p$t2))
         stop("Two tensions have already been specified")
     p$t2 <- x
-    class(p) <- c("incompletePath", "path", "mpobj")
+    class(p) <- c("incompletePath", "mppath", "mpobj")
     p
 }
 
@@ -362,7 +362,7 @@ addToIncompletePath.curl <- function(x, p) {
     if (!is.null(p$c2))
         stop("Two curls have already been specified")
     p$c2 <- x
-    class(p) <- c("incompletePath", "path", "mpobj")
+    class(p) <- c("incompletePath", "mppath", "mpobj")
     p
 }
 
@@ -370,7 +370,7 @@ addToIncompletePath.direction <- function(x, p) {
     if (!is.null(p$d2))
         stop("Two directions have already been specified")
     p$d2 <- x
-    class(p) <- c("incompletePath", "path", "mpobj")
+    class(p) <- c("incompletePath", "mppath", "mpobj")
     p
 }
 
@@ -416,7 +416,7 @@ addToIncompletePath.knot <- function(x, p) {
     do.call(path, c(p$knots, list(x)))
 }
 
-addToIncompletePath.path <- function(x, p) {
+addToIncompletePath.mppath <- function(x, p) {
     ## Resolve incomplete path
     n <- length(p)
     ## Control points
@@ -468,25 +468,25 @@ addToPath <- function(x, p) {
 
 addToPath.controlPoint <- function(x, p) {
     p$cp1 <- x
-    class(p) <- c("incompletePath", "path", "mpobj")
+    class(p) <- c("incompletePath", "mppath", "mpobj")
     p
 }
 
 addToPath.tension <- function(x, p) {
     p$t1 <- x
-    class(p) <- c("incompletePath", "path", "mpobj")
+    class(p) <- c("incompletePath", "mppath", "mpobj")
     p
 }
 
 addToPath.curl <- function(x, p) {
     p$c1 <- x
-    class(p) <- c("incompletePath", "path", "mpobj")
+    class(p) <- c("incompletePath", "mppath", "mpobj")
     p
 }
 
 addToPath.direction <- function(x, p) {
     p$d1 <- x
-    class(p) <- c("incompletePath", "path", "mpobj")
+    class(p) <- c("incompletePath", "mppath", "mpobj")
     p
 }
 
@@ -494,11 +494,11 @@ addToPath.knot <- function(x, p) {
     do.call(path, c(p$knots, list(x)))
 }
 
-addToPath.path <- function(x, p) {
+addToPath.mppath <- function(x, p) {
     do.call(path, c(p$knots, x$knots))
 }
 
-combine.path <- function(x, y) {
+combine.mppath <- function(x, y) {
     addToPath(y, x)
 }
 
@@ -529,14 +529,14 @@ Ops.mpobj <- function(e1, e2) {
         stop("Invalid operation on knots")
     }
     if (.Generic == "-") {
-        if ((inherits(e1, "knot") || inherits(e1, "path")) &&
-            (inherits(e2, "knot") || inherits(e2, "path"))) {
+        if ((inherits(e1, "knot") || inherits(e1, "mppath")) &&
+            (inherits(e2, "knot") || inherits(e2, "mppath"))) {
             e1 + curl(1) + curl(1) + e2
         } else {
             stop("It is only valid to use '-' between knots and paths")
         }
     } else {
-        if (inherits(e1, "knot") || inherits(e1, "path")) {
+        if (inherits(e1, "knot") || inherits(e1, "mppath")) {
             combine(e1, e2)
         } else {
             stop("It is only valid to combine a connector with a knot or path")
@@ -545,8 +545,8 @@ Ops.mpobj <- function(e1, e2) {
 }
 
 "%+%" <- function(e1, e2) {
-    if ((inherits(e1, "knot") || inherits(e1, "path")) &&
-        (inherits(e2, "knot") || inherits(e2, "path"))) {
+    if ((inherits(e1, "knot") || inherits(e1, "mppath")) &&
+        (inherits(e2, "knot") || inherits(e2, "mppath"))) {
         e1 + tension(-1) + e2
     } else {
         stop("It is only valid to use '%+%' between knots and paths")
@@ -554,8 +554,8 @@ Ops.mpobj <- function(e1, e2) {
 }
 
 "%-%" <- function(e1, e2) {
-    if ((inherits(e1, "knot") || inherits(e1, "path")) &&
-        (inherits(e2, "knot") || inherits(e2, "path"))) {
+    if ((inherits(e1, "knot") || inherits(e1, "mppath")) &&
+        (inherits(e2, "knot") || inherits(e2, "mppath"))) {
         e1 + tension(Inf) + e2
     } else {
         stop("It is only valid to use '%+%' between knots and paths")

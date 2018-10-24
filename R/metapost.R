@@ -116,7 +116,7 @@ connectKnot <- function(x, y, last=FALSE, digits=2) {
            as.character(y, last=last, digits=digits))
 }
 
-as.character.path <- function(x, ..., digits=2) {
+as.character.mppath <- function(x, ..., digits=2) {
     n <- length(x)
     if (n == 1) {
         as.character(x$knots[[1]], first=TRUE, last=TRUE, digits=digits)
@@ -137,7 +137,7 @@ as.character.path <- function(x, ..., digits=2) {
 
 ## Generate MetaPost code from R objects (within a file)
 metapost <- function(x, file="fig.mp") {
-    if (!inherits(x, "path"))
+    if (!inherits(x, "mppath"))
         stop("'x' must be a path object")
     code <- c("beginfig(1);",
               paste0("draw ", as.character(x), ";"),

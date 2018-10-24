@@ -36,8 +36,8 @@ export("cp",
        "metapostGrob")
 
 S3method("length", "knot")
-S3method("length", "path")
+S3method("length", "mppath")
 S3method("Ops", "mpobj")
 S3method("makeContent", "metapostgrob")
 S3method("print", "knot")
-S3method("print", "path")
+S3method("print", "mppath")
