@@ -35,9 +35,9 @@ metapostGrob.mpcontrols <- function(x,
 
 ## Several solved paths (scale already fixed)
 metapostGrob.mpcontrolList <- function(x,
-                                    gp=gpar(),
-                                    name=NULL) {
-    paths <- mapply(pathGrobs, x, 1:length(x), SIMPLIFY=FALSE)
+                                       gp=gpar(),
+                                       name=NULL) {
+    paths <- mapply(pathGrob, x, 1:length(x), SIMPLIFY=FALSE)
     gTree(children=do.call(gList, paths),
           gp=gp, name=name, cl="mpsolvedgrob")    
 }
