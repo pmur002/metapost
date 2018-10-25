@@ -2,7 +2,7 @@
 ## Call the mpost processor from R
 
 mpost <- function(file,
-                  cmd=NULL, template=NULL, format=NULL, tracing=FALSE) {
+                  cmd=NULL, template=NULL, format=NULL, tracing=TRUE) {
     if (is.null(cmd)) {
         cmd <- Sys.which("mpost")
         if (!nchar(cmd)) {
