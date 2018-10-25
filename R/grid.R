@@ -1,5 +1,5 @@
 
-pathGrobs <- function(controls, pathIndex) {
+pathGrob <- function(controls, pathIndex=1) {
     BezierGrob(controls$x, controls$y,
                open=is.null(attr(controls, "cycle")),
                default.units="pt",
@@ -15,7 +15,7 @@ makeContent.metapostgrob <- function(x) {
     metapost(x$path, mpfile)
     mpost(mpfile, tracing=TRUE)
     pathControls <- mptrace(logfile)
-    paths <- mapply(pathGrobs, pathControls, 1:length(pathControls),
+    paths <- mapply(pathGrob, pathControls, 1:length(pathControls),
                     SIMPLIFY=FALSE)
     setChildren(x, do.call(gList, paths))
 }
@@ -26,6 +26,15 @@ metapostGrob <- function(x, ...) {
 
 ## A solved path (scale already fixed)
 metapostGrob.mpcontrols <- function(x,
+                                    gp=gpar(),
+                                    name=NULL) {
+    path <- pathGrob(x)
+    gTree(children=do.call(gList, path),
+          gp=gp, name=name, cl="mpsolvedgrob")    
+}
+
+## Several solved paths (scale already fixed)
+metapostGrob.mpcontrolList <- function(x,
                                     gp=gpar(),
                                     name=NULL) {
     paths <- mapply(pathGrobs, x, 1:length(x), SIMPLIFY=FALSE)

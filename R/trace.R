@@ -27,6 +27,7 @@ parsePath <- function(path) {
     if (cycle) {
         attr(controls, "cycle") <- TRUE
     }
+    class(controls) <- "mpcontrols"
     controls
 }
 
@@ -55,7 +56,7 @@ mptrace <- function(logfile, name=NULL) {
                     info[info$type == "paths", 2],
                     SIMPLIFY=FALSE)
     pathControls <- lapply(paths, parsePath)
-    class(pathControls) <- "mpcontrols"
+    class(pathControls) <- "mpcontrolList"
     pathControls
 }
 
