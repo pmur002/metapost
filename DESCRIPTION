@@ -10,4 +10,5 @@ Description: Provides an R interface to METAPOST.
     functions to process MetaPost code, and functions to read
     solved MetaPost paths back into R.
 Imports: grid, gridBezier
+Suggests: grImport
 License: GPL (>= 2)
