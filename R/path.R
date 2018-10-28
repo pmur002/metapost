@@ -41,8 +41,10 @@ knot <- function(x, y,
               dir.left=dir.left, dir.right=dir.right,
               cp.left.x=cp.left.x, cp.right.x=cp.right.x,
               cp.left.y=cp.left.y, cp.right.y=cp.right.y,
-              curl.left=curl.left, curl.right=curl.right,
-              tension.left=tension.left, tension.right=tension.right)
+              curl.left=checkCurl(curl.left),
+              curl.right=checkCurl(curl.right),
+              tension.left=checkTension(tension.left),
+              tension.right=checkTension(tension.right))
     class(k) <- c("knot", "mpobj")
     k
 }
@@ -98,18 +100,30 @@ dir <- function(x, y=NULL) {
     d
 }
 
-## TODO
-## limit to valid tension values
-tension <- function(x) {
+checkTension <- function(x) {
     x <- as.numeric(x)
+    if (!is.na(x) && abs(x) < .75) {
+        stop("Tension values must be greater than 0.75")
+    }
+    x
+}
+
+tension <- function(x) {
+    x <- checkTension(x)
     class(x) <- c("tension", "connector", "mpobj")
     x
 }
 
-## TODO
-## limit to valid curl values
-curl <- function(x) {
+checkCurl <- function(x) {
     x <- as.numeric(x)
+    if (!is.na(x) && x < 0) {
+        stop("Curl must be non-negative")
+    }
+    x
+}
+
+curl <- function(x) {
+    x <- checkCurl(x)
     class(x) <- c("curl", "connector", "mpobj")
     x
 }
