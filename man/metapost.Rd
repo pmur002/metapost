@@ -7,7 +7,7 @@
   Generate a MetaPost file from a MetaPost path.
 }
 \usage{
-metapost(x, file = "fig.mp")
+metapost(x, file = "fig.mp", digits=2)
 }
 \arguments{
   \item{x}{
@@ -16,6 +16,10 @@ metapost(x, file = "fig.mp")
   \item{file}{
     The name of the file to produce.  If \code{NULL}, no file
     is created.
+  }
+  \item{digits}{
+    The number of decimal places to use when writing floating
+    point values in MetaPost code.
   }
 }
 \value{

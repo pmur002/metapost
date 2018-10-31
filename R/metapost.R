@@ -136,11 +136,11 @@ as.character.mppath <- function(x, ..., digits=2) {
 }
 
 ## Generate MetaPost code from R objects (within a file)
-metapost <- function(x, file="fig.mp") {
+metapost <- function(x, file="fig.mp", digits=2) {
     if (!inherits(x, "mppath"))
         stop("'x' must be a path object")
     code <- c("beginfig(1);",
-              paste0("draw ", as.character(x), ";"),
+              paste0("draw ", as.character(x, digits=digits), ";"),
               "endfig;",
               "end")
     if (!is.null(file)) {

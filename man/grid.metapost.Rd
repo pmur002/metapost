@@ -11,9 +11,9 @@
   Draw a MetaPost curve in \pkg{grid} graphics.
 }
 \usage{
-\method{metapostGrob}{mppath}(x, gp = gpar(), name = NULL)
-\method{metapostGrob}{mpcontrols}(x, gp = gpar(), name = NULL)
-\method{metapostGrob}{mpcontrolList}(x, gp = gpar(), name = NULL)
+\method{metapostGrob}{mppath}(x, gp = gpar(), name = NULL, digits=2, ...)
+\method{metapostGrob}{mpcontrols}(x, gp = gpar(), name = NULL, ...)
+\method{metapostGrob}{mpcontrolList}(x, gp = gpar(), name = NULL, ...)
 grid.metapost(...)
 }
 \arguments{
@@ -27,6 +27,10 @@ grid.metapost(...)
   }
   \item{name}{
     A name for the grob that is created.
+  }
+  \item{digits}{
+    The number of decimal places to use when writing floating
+    point values in MetaPost code.
   }
   \item{\dots}{
     Arguments passed to \code{metapostGrob}.

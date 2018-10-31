@@ -1,7 +1,7 @@
 
 ## Call the mpost processor from R
 
-mpost <- function(file,
+mpost <- function(file="fig.mp",
                   cmd=NULL, template=NULL, format=NULL, tracing=TRUE) {
     if (is.null(cmd)) {
         cmd <- Sys.which("mpost")

@@ -7,7 +7,8 @@
   Run \command{mpost} on a MetaPost file, possibly with additional options.
 }
 \usage{
-mpost(file, cmd = NULL, template = NULL, format = NULL, tracing = TRUE)
+mpost(file = "fig.mp",
+      cmd = NULL, template = NULL, format = NULL, tracing = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

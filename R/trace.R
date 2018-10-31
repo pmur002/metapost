@@ -31,7 +31,7 @@ parsePath <- function(path) {
     controls
 }
 
-mptrace <- function(logfile) {
+mptrace <- function(logfile="fig.log") {
     log <- readLines(logfile)
     if (!grepl("This is MetaPost", log[1]))
         stop("File does not appear to be a MetaPost log file")

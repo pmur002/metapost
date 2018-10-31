@@ -12,7 +12,7 @@ makeContent.metapostgrob <- function(x) {
     on.exit(setwd(wd))
     mpfile <- tempfile(fileext=".mp")
     logfile <- gsub(".mp$", ".log", mpfile)
-    metapost(x$path, mpfile)
+    metapost(x$path, mpfile, x$digits)
     mpost(mpfile, tracing=TRUE)
     pathControls <- mptrace(logfile)
     paths <- mapply(pathGrob, pathControls, 1:length(pathControls),
@@ -27,7 +27,7 @@ metapostGrob <- function(x, ...) {
 ## A solved path (scale already fixed)
 metapostGrob.mpcontrols <- function(x,
                                     gp=gpar(),
-                                    name=NULL) {
+                                    name=NULL, ...) {
     path <- pathGrob(x)
     gTree(children=do.call(gList, path),
           gp=gp, name=name, cl="mpsolvedgrob")    
@@ -36,7 +36,7 @@ metapostGrob.mpcontrols <- function(x,
 ## Several solved paths (scale already fixed)
 metapostGrob.mpcontrolList <- function(x,
                                        gp=gpar(),
-                                       name=NULL) {
+                                       name=NULL, ...) {
     paths <- mapply(pathGrob, x, 1:length(x), SIMPLIFY=FALSE)
     gTree(children=do.call(gList, paths),
           gp=gp, name=name, cl="mpsolvedgrob")    
@@ -45,8 +45,9 @@ metapostGrob.mpcontrolList <- function(x,
 ## An unsolved path
 metapostGrob.mppath <- function(x,
                                 gp=gpar(),
-                                name=NULL) {
-    gTree(path=x, gp=gp, name=name, cl="metapostgrob")
+                                name=NULL,
+                                digits=2, ...) {
+    gTree(path=x, gp=gp, name=name, digits=digits, cl="metapostgrob")
 }
 
 grid.metapost <- function(...) {

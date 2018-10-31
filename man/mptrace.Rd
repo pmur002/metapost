@@ -11,7 +11,7 @@
   (which can then be drawn by \code{\link{grid.metapost}}).
 }
 \usage{
-mptrace(logfile)
+mptrace(logfile = "fig.log")
 mpbbox(psfile)
 mpvp(psfile, ...)
 }
