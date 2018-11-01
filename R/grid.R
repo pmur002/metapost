@@ -2,7 +2,7 @@
 pathGrob <- function(controls, pathIndex=1) {
     BezierGrob(controls$x, controls$y,
                open=is.null(attr(controls, "cycle")),
-               default.units="pt",
+               default.units="bigpts",
                name=paste0("path-", pathIndex))
 }
 
