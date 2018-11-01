@@ -72,6 +72,6 @@ mpvp <- function(psfile, ...) {
     bbox <- mpbbox(psfile)
     dx <- diff(bbox[c(1, 3)])
     dy <- diff(bbox[c(2, 4)])
-    viewport(width=unit(dx, "pt"), height=unit(dy, "pt"), ...)
+    viewport(width=unit(dx, "bigpts"), height=unit(dy, "bigpts"), ...)
 }    
                     
