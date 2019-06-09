@@ -102,7 +102,7 @@ dir <- function(x, y=NULL) {
 
 checkTension <- function(x) {
     x <- as.numeric(x)
-    if (!is.na(x) && abs(x) < .75) {
+    if (any(!is.na(x) & abs(x) < .75)) {
         stop("Tension values must be greater than 0.75")
     }
     x
@@ -116,7 +116,7 @@ tension <- function(x) {
 
 checkCurl <- function(x) {
     x <- as.numeric(x)
-    if (!is.na(x) && x < 0) {
+    if (any(!is.na(x) & x < 0)) {
         stop("Curl must be non-negative")
     }
     x
@@ -456,8 +456,8 @@ addToIncompletePath.mppath <- function(x, p) {
         if (is.null(p$c2)) {
             p$c2 <- p$c1
         }
-        p$knots[[n]]$curl.right <- p$t1
-        x$knots[[1]]$curl.left <- p$t2
+        p$knots[[n]]$curl.right <- p$c1
+        x$knots[[1]]$curl.left <- p$c2
     }
     ## Direction
     ## NOTE: do NOT repeat direction by default
@@ -527,9 +527,9 @@ combine.mppath <- function(x, y) {
 ## http://www.ctex.org/documents/shredder/src/mfbook.pdf
 ## says ...
 
-## -- is an abbreviation for ‘{curl 1}..{curl 1}’
-## ... is an abbreviation for ‘..tension atleast 1..’
-## --- is an abbreviation for ‘..tension infinity..’
+## -- is an abbreviation for '{curl 1}..{curl 1}'
+## ... is an abbreviation for '..tension atleast 1..'
+## --- is an abbreviation for '..tension infinity..'
 
 ## TODO
 ## What about adding a connector to a path ?
