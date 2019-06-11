@@ -2,6 +2,12 @@
 \title{NEWS file for the metapost package}
 \encoding{UTF-8}
 
+\section{Changes in version 0.1-3}{
+  \itemize{
+    \item Minor tidying for CRAN submission
+  }
+}
+
 \section{Changes in version 0.1-2}{
   \itemize{
     \item Fix bug in curl() (and tension()) with more than one value.

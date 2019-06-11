@@ -1,10 +1,10 @@
 Package: metapost
 Type: Package
-Title: R Interface to MetaPost
-Version: 1.0-2
+Title: Interface to MetaPost
+Version: 1.0-3
 Author: Paul Murrell
 Maintainer: Paul Murrell <paul@stat.auckland.ac.nz>
-Description: Provides an R interface to MetaPost (Hobby, 1998) 
+Description: Provides an interface to MetaPost (Hobby, 1998) 
     <http://www.tug.org/docs/metapost/mpman.pdf>.
     There are functions to generate an R description of a MetaPost
     curve, functions to generate MetaPost code from an R description,

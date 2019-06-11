@@ -43,8 +43,9 @@ Paul Murrell <paul@stat.auckland.ac.nz>
 }
 \examples{
 \dontrun{
-options(metapath.units="in")
+oldunits <- options(metapost.units="in")
 p <- knot(0, 0) + dir(0) + dir(0) + knot(1, 1)
 grid.metapost(p)
+options(oldunits)
 }
 }
