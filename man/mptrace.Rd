@@ -45,12 +45,16 @@ mpvp(psfile, ...)
   \code{\link{grid.metapost}}
 }
 \examples{
-\dontrun{
+\donttest{
+oldunits <- options(metapost.units="in")
+oldwd <- setwd(tempdir())
 p <- knot(0, 0) + dir(0) + dir(0) + knot(1, 1)
-mpfile <- metapost(p, "fig.mp")
+metapost(p, "fig.mp")
 mpost("fig.mp")
 paths <- mptrace("fig.log")
 grid.metapost(paths)
+setwd(oldwd)
+options(oldunits)
 }
 }
 \keyword{ dplot }% use one of  RShowDoc("KEYWORDS")

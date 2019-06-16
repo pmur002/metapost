@@ -2,7 +2,7 @@
 \title{NEWS file for the metapost package}
 \encoding{UTF-8}
 
-\section{Changes in version 0.1-3}{
+\section{Changes in version 0.1-4}{
   \itemize{
     \item Minor tidying for CRAN submission
   }
