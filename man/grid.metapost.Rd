@@ -49,10 +49,8 @@ grid.metapost(...)
 \examples{
 \donttest{
 oldunits <- options(metapost.units="in")
-oldwd <- setwd(tempdir())
 p <- knot(0, 0) + dir(0) + dir(0) + knot(1, 1) 
 grid.metapost(p)
-setwd(oldwd)
 options(oldunits)
 }
 }
