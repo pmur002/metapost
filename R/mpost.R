@@ -3,6 +3,8 @@
 
 mpost <- function(file="fig.mp",
                   cmd=NULL, template=NULL, format=NULL, tracing=TRUE) {
+    oldwd <- setwd(dirname(file))
+    on.exit(setwd(oldwd))
     if (is.null(cmd)) {
         cmd <- Sys.which("mpost")
         if (!nchar(cmd)) {

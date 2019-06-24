@@ -8,8 +8,6 @@ pathGrob <- function(controls, pathIndex=1) {
 
 makeContent.metapostgrob <- function(x) {
     wd <- getwd()
-    setwd(tempdir())
-    on.exit(setwd(wd))
     mpfile <- tempfile(fileext=".mp")
     logfile <- gsub(".mp$", ".log", mpfile)
     metapost(x$path, mpfile, x$digits)

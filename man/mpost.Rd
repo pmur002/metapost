@@ -36,6 +36,9 @@ mpost(file = "fig.mp",
 \details{
   By default, \code{tracing} is \code{TRUE}, which produces a log
   file that can be read into \R{} using \code{\link{mptrace}}.
+
+  Both output and log files will be produced in the same directory
+  as the \code{file}.
 }
 \value{
   Used for its side effect of producing output files and log files.
@@ -50,12 +53,10 @@ mpost(file = "fig.mp",
 \examples{
 \donttest{
 oldunits <- options(metapost.units="in")
-oldwd <- setwd(tempdir())
 p <- knot(0, 0) + dir(0) + dir(0) + knot(1, 1)
 mpfile <- file.path(tempdir(), "fig.mp")
 metapost(p, mpfile)
 mpost(mpfile)
-setwd(oldwd)
 options(oldunits)
 }
 }
