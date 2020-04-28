@@ -3,7 +3,7 @@
 \alias{metapostGrob}
 \alias{metapostGrob.mppath}
 \alias{metapostGrob.mpcontrols}
-\alias{metapostGrob.mpcontrolList}
+\alias{metapostGrob.mpfigure}
 \title{
   Draw a MetaPost curve.
 }
@@ -13,7 +13,7 @@
 \usage{
 \method{metapostGrob}{mppath}(x, gp = gpar(), name = NULL, digits=2, ...)
 \method{metapostGrob}{mpcontrols}(x, gp = gpar(), name = NULL, ...)
-\method{metapostGrob}{mpcontrolList}(x, gp = gpar(), name = NULL, ...)
+\method{metapostGrob}{mpfigure}(x, gp = gpar(), name = NULL, ...)
 grid.metapost(...)
 }
 \arguments{

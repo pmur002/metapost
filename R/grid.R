@@ -15,7 +15,7 @@ makeContent.metapostgrob <- function(x) {
     logfile <- gsub(".mp$", ".log", mpfile)
     metapost(x$path, mpfile, x$digits)
     mpost(mpfile, tracing=TRUE)
-    pathControls <- mptrace(logfile, x$fig)
+    pathControls <- mptrace(logfile)
     paths <- mapply(pathGrob, pathControls, 1:length(pathControls),
                     SIMPLIFY=FALSE)
     setChildren(x, do.call(gList, paths))
@@ -48,9 +48,8 @@ metapostGrob.mppath <- function(x,
                                 gp=gpar(),
                                 name=NULL,
                                 digits=2,
-                                fig=1,
                                 ...) {
-    gTree(path=x, gp=gp, name=name, digits=digits, fig=fig,
+    gTree(path=x, gp=gp, name=name, digits=digits, 
           cl="metapostgrob")
 }
 
@@ -116,7 +115,7 @@ makeContent.figuregrob <- function(x) {
     logfile <- gsub(".mp$", ".log", mpfile)
     metapost(x$path, mpfile, x$digits)
     mpost(mpfile, tracing=TRUE)
-    pathControls <- mptrace(logfile, x$fig)
+    pathControls <- mptrace(logfile)
     gt <- figureGTree(pathControls,
                       x$x, x$y, x$width, x$height, x$just,
                       x$expansion, x$xscale, x$yscale, x$distort, x$clip)
@@ -160,7 +159,6 @@ figureGrob.mppath <- function(figure,
                               gp = gpar(),
                               name = NULL,
                               digits = 2,
-                              fig = 1,
                               ...) {
     if (!is.unit(x))
         x <- unit(x, default.units)
@@ -178,7 +176,7 @@ figureGrob.mppath <- function(figure,
           expansion = expansion,
           xscale = xscale, yscale = yscale,
           distort = distort,
-          gp=gp, name=name, digits=digits, fig=fig,
+          gp=gp, name=name, digits=digits,
           cl="figuregrob")
 }
 
