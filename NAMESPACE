@@ -32,15 +32,18 @@ export("cp",
        "mpbbox",
        "mpvp",
 
-       "grid.metapost",
-       "metapostGrob")
+       "grid.metapost", "grid.figure",
+       "metapostGrob", "figureGrob")
 
 S3method("length", "knot")
 S3method("length", "mppath")
 S3method("Ops", "mpobj")
 S3method("makeContent", "metapostgrob")
 S3method("metapostGrob", "mpcontrols")
-S3method("metapostGrob", "mpcontrolList")
+S3method("metapostGrob", "mpfigure")
 S3method("metapostGrob", "mppath")
+S3method("makeContent", "figuregrob")
+S3method("figureGrob", "mpfigure")
+S3method("figureGrob", "mppath")
 S3method("print", "knot")
 S3method("print", "mppath")

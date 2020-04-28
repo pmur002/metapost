@@ -57,8 +57,8 @@ mptrace <- function(logfile="fig.log", fig=1) {
         figIndex <- which(figLabels == fig)
     }
     ## Just look at the log content for the relevant figure
-    logStart <- if (figIndex == 1) 1 else figures[figIndex] + 1
-    logEnd <- figures[figIndex] - 1
+    logStart <- if (figIndex == 1) 1 else figures[figIndex - 1] + 1
+    logEnd <- if (figIndex < nfig) figures[figIndex] - 1 else length(log)
     log <- log[logStart:logEnd]
     ## Now read paths 
     beforeStart <- grep("^Path .+ before choices", log)
@@ -82,7 +82,7 @@ mptrace <- function(logfile="fig.log", fig=1) {
                     info[info$type == "paths", 2],
                     SIMPLIFY=FALSE)
     pathControls <- lapply(paths, parsePath)
-    class(pathControls) <- "mpcontrolList"
+    class(pathControls) <- "mpfigure"
     pathControls
 }
 
