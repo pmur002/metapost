@@ -12,7 +12,7 @@ makeContent.metapostgrob <- function(x) {
     logfile <- gsub(".mp$", ".log", mpfile)
     metapost(x$path, mpfile, x$digits)
     mpost(mpfile, tracing=TRUE)
-    pathControls <- mptrace(logfile)
+    pathControls <- mptrace(logfile, x$fig)
     paths <- mapply(pathGrob, pathControls, 1:length(pathControls),
                     SIMPLIFY=FALSE)
     setChildren(x, do.call(gList, paths))
@@ -44,8 +44,11 @@ metapostGrob.mpcontrolList <- function(x,
 metapostGrob.mppath <- function(x,
                                 gp=gpar(),
                                 name=NULL,
-                                digits=2, ...) {
-    gTree(path=x, gp=gp, name=name, digits=digits, cl="metapostgrob")
+                                digits=2,
+                                fig=1,
+                                ...) {
+    gTree(path=x, gp=gp, name=name, digits=digits, fig=fig,
+          cl="metapostgrob")
 }
 
 grid.metapost <- function(...) {

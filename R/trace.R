@@ -31,10 +31,36 @@ parsePath <- function(path) {
     controls
 }
 
-mptrace <- function(logfile="fig.log") {
+mptrace <- function(logfile="fig.log", fig=1) {
     log <- readLines(logfile)
     if (!grepl("This is MetaPost", log[1]))
         stop("File does not appear to be a MetaPost log file")
+    ## Figures must be labelled numerically
+    ## (https://www.ntg.nl/doc/hobby/mpman.pdf pg. 7)
+    ## BUT they do not have to be sequential OR in order
+    if (length(fig) != 1) {
+        stop("Must specify exactly one figure")
+    }
+    figures <- grep("[[][0-9]+[]]", log)
+    nfig <- length(figures)
+    figLabels <- gsub("^.*[[]|[]].*$", "", log[figures])
+    if (is.numeric(fig)) {
+        if (fig < 1 || fig > nfig) {
+            stop("Invalid figure selection")
+        } 
+        figIndex <- fig
+    } else {
+        fig <- as.character(fig)
+        if (!(fig %in% figLabels)) {
+            stop("Invalid figure selection")
+        }
+        figIndex <- which(figLabels == fig)
+    }
+    ## Just look at the log content for the relevant figure
+    logStart <- if (figIndex == 1) 1 else figures[figIndex] + 1
+    logEnd <- figures[figIndex] - 1
+    log <- log[logStart:logEnd]
+    ## Now read paths 
     beforeStart <- grep("^Path .+ before choices", log)
     nBefore <- length(beforeStart)
     afterStart <- grep("^Path .+ after choices", log)
