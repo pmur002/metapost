@@ -71,9 +71,15 @@ figureVP <- function(pathControls, x, y, width, height, just,
     
     if (is.null(xscale)) {
         xscale <- range(unlist(lapply(pathControls, function(p) p$x)))
+    } else {
+        if (length(xscale) != 2)
+            stop("Invalid xscale")
     }
     if (is.null(yscale)) {
         yscale <- range(unlist(lapply(pathControls, function(p) p$y)))
+    } else {
+        if (length(yscale) != 2)
+            stop("Invalid yscale")
     }
     xscale <- xscale + expansion * c(-1, 1) * diff(xscale)
     yscale <- yscale + expansion * c(-1, 1) * diff(yscale)
